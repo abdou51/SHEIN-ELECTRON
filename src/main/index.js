@@ -58,7 +58,7 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('print-request', async (event, arg) => {
     console.log('Received print request with:', arg)
-    await printReceipt()
+    await printReceipt(arg)
     event.reply('print-reply', 'Printed successfully')
   })
 
@@ -83,7 +83,7 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-async function printReceipt() {
+async function printReceipt(finalOrder) {
   const printer = new ThermalPrinter({
     type: PrinterTypes.EPSON,
     interface: '//localhost/XP-80C',
@@ -91,46 +91,6 @@ async function printReceipt() {
       timeout: 5e3
     }
   })
-  const order = {
-    reference: '202405150001',
-    note: 'Please deliver between 10 AM and 5 PM.',
-    shippingType: 'home',
-    shippingPrice: 500,
-    status: 'pending',
-    fullName: 'John Doe',
-    address: '123 Main St',
-    wilaya: 'Wilaya Name',
-    commune: 'Commune Name',
-    phoneNumber1: '1234567890',
-    phoneNumber2: '0987654321',
-    reduction: 500,
-    total: 7e3,
-    verse: 7e3,
-    rest: 0,
-    orderItems: [
-      {
-        product: {
-          _id: '6644c2157a66136026b4abc2',
-          name: 'Chemise rouge'
-        },
-        hex: '#ff0000',
-        size: 42,
-        quantity: 2,
-        price: 3500
-      },
-      {
-        product: {
-          _id: '6644c2157a66136026b4abc3',
-          name: 'Pantalon bleu'
-        },
-        hex: '#0000ff',
-        size: 40,
-        quantity: 1,
-        price: 4e3
-      }
-    ],
-    createdAt: /* @__PURE__ */ new Date('2024-05-15T14:09:25.469Z')
-  }
   const logoPath = path.join(__dirname, '../../resources/logo.png')
   const infoLogo = path.join(__dirname, '../../resources/BONSHEIN.png')
   printer.alignCenter()
@@ -140,25 +100,30 @@ async function printReceipt() {
   printer.drawLine()
   printer.bold(true)
   printer.alignCenter()
-  printer.code128(`${order.reference}`)
+  printer.code128(`${finalOrder.reference}`)
   printer.println()
   printer.bold(true)
-  printer.println(
-    `Date: ${order.createdAt.toISOString().slice(0, 10)}   Heure : ${order.createdAt.toISOString().slice(11, 19)}`
-  )
+
+  const finalOrderDate = new Date(finalOrder.date)
+  finalOrderDate.setHours(finalOrderDate.getHours() + 1)
+
+  const formattedDate = finalOrderDate.toISOString().slice(0, 10)
+  const formattedTime = finalOrderDate.toISOString().slice(11, 19)
+
+  printer.println(`Date: ${formattedDate}   Heure: ${formattedTime}`)
   printer.drawLine()
   printer.alignLeft()
   printer.tableCustom([
     { text: 'Produit', align: 'LEFT', width: 0.5 },
-    { text: 'Quantite', align: 'CENTER', width: 0.25 },
+    { text: 'Reduction', align: 'CENTER', width: 0.25 },
     { text: 'Prix', align: 'RIGHT', width: 0.25 }
   ])
   printer.drawLine()
-  order.orderItems.forEach((item) => {
+  finalOrder.orderItems.forEach((item) => {
     printer.tableCustom([
-      { text: item.product.name, align: 'LEFT', width: 0.5 },
-      { text: `${item.quantity}`, align: 'CENTER', width: 0.25 },
-      { text: `${item.quantity * item.price} DA`, align: 'RIGHT', width: 0.25 }
+      { text: item.productName, align: 'LEFT', width: 0.5 },
+      { text: `${item.discount} %`, align: 'CENTER', width: 0.25 },
+      { text: `${item.finalPrice} DA`, align: 'RIGHT', width: 0.25 }
     ])
     printer.drawLine()
   })
@@ -166,28 +131,44 @@ async function printReceipt() {
   printer.setTextSize(1, 1)
   printer.alignCenter()
   printer.bold(true)
-  {
-    printer.println(`Soustotal: ${order.total} DA`)
-    printer.newLine()
-    printer.println(`Reduction: ${order.reduction} DA`)
-    printer.newLine()
-  }
+  // {
+  //   printer.println(`Soustotal: ${finalOrder.total} DA`)
+  //   printer.newLine()
+  //   printer.println(`Reduction: ${finalOrder.reduction} DA`)
+  //   printer.newLine()
+  // }
   printer.newLine()
   printer.setTextSize(2, 2)
-  printer.println(`Total: ${order.total + order.shippingPrice} DA`)
+  printer.println(`Total: ${finalOrder.total} DA`)
+  if (finalOrder.versement > 0) {
+    printer.println(`Versee: ${finalOrder.versement} DA`)
+    printer.println(`Reste: ${finalOrder.total - finalOrder.versement} DA`)
+  }
   printer.setTextNormal()
-  printer.drawLine()
-  printer.setTextNormal()
-  printer.drawLine()
-  printer.alignLeft()
+
   printer.bold(true)
-  printer.println('Client:')
-  printer.println('Telephone: 0657898754')
+  if (finalOrder.phone) {
+    printer.drawLine()
+    printer.alignLeft()
+    printer.println('Client:')
+    printer.println(`Telephone: ${finalOrder.phone}`)
+  }
+
   printer.drawLine()
   printer.alignCenter()
   printer.bold(true)
   printer.println('Merci pour votre visite , a bientot !')
   printer.drawLine()
+
+  printer.alignLeft()
+  printer.bold(true)
+  printer.println('Kadri TECH')
+  printer.setTextNormal()
+  printer.println('. Sponsor ( Facebook & Instagram). ')
+  printer.println('. developpement Des sites web & logiciels. ')
+  printer.println('. Publicite digitale.')
+  printer.println('. 06.96.09.24.52')
+
   const minLines = 50
   const currentLines = printer.buffer.length
   const additionalLines = minLines - currentLines
