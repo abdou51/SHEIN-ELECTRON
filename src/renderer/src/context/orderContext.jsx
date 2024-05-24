@@ -23,6 +23,7 @@ export const OrderProvider = ({ children }) => {
         }))
       }
       await axios.post('/orders', parsedOrder)
+      window.electron.ipcRenderer.send('print-request')
     } catch (error) {
       console.error('Error adding arrival:', error)
     } finally {

@@ -2,7 +2,13 @@ import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  sendPrintRequest: (data) => electron.ipcRenderer.send('print-request', data),
+  onPrintReply: (callback) => {
+    electron.ipcRenderer.removeAllListeners('print-reply')
+    electron.ipcRenderer.on('print-reply', (event, response) => callback(response))
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
