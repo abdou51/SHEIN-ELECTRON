@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sora: "Sora", sans-serif;
+  --font-code: "Source Code Pro", monospace;
+  --font-grotesk: "Space Grotesk", sans-serif;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* for Internet Explorer and Edge */
+  scrollbar-width: none; /* for Firefox */
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  nav {
+    @apply font-sans bg-n-8 text-n-1 text-base;
+  }
+  aside {
+    @apply font-sans bg-n-8 text-n-1 text-base;
+  }
+  body {
+    @apply font-sans bg-[#2a2a2a] text-n-1 text-base;
+    user-select: none;
+  }
+}
