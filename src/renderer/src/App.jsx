@@ -4,12 +4,14 @@ import Arrivals from '../src/pages/Arrivals'
 import Login from './pages/Login'
 import Categories from './pages/Categories'
 import Products from './pages/Products'
+import Returns from './pages/Returns'
 import { CategoryProvider } from './context/categoryContext'
 import { ArrivalProvider } from './context/arrivalContext'
 import { ProductProvider } from './context/productContext'
 import { CartProvider } from './context/cartContext'
 import { UserProvider } from './context/userContext'
 import { OrderProvider } from './context/orderContext'
+import { ReturnsProvider } from './context/returnsContext'
 import { ToastProvider } from './context/toastContext'
 
 const App = () => {
@@ -18,21 +20,24 @@ const App = () => {
       <ToastProvider>
         <UserProvider>
           <CartProvider>
-            <OrderProvider>
-              <ArrivalProvider>
-                <CategoryProvider>
-                  <ProductProvider>
-                    <Routes>
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/" element={<Home />} />
-                      <Route path="/arrivals" element={<Arrivals />} />
-                      <Route path="/categories" element={<Categories />} />
-                      <Route path="/products" element={<Products />} />
-                    </Routes>
-                  </ProductProvider>
-                </CategoryProvider>
-              </ArrivalProvider>
-            </OrderProvider>
+            <ReturnsProvider>
+              <OrderProvider>
+                <ArrivalProvider>
+                  <CategoryProvider>
+                    <ProductProvider>
+                      <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/" element={<Home />} />
+                        <Route path="/arrivals" element={<Arrivals />} />
+                        <Route path="/categories" element={<Categories />} />
+                        <Route path="/products" element={<Products />} />
+                        <Route path="/returns" element={<Returns />} />
+                      </Routes>
+                    </ProductProvider>
+                  </CategoryProvider>
+                </ArrivalProvider>
+              </OrderProvider>
+            </ReturnsProvider>
           </CartProvider>
         </UserProvider>
       </ToastProvider>
