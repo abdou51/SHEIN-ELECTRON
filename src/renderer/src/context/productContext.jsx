@@ -1,68 +1,65 @@
-import { createContext, useState, useEffect, useCallback } from "react";
-import axios from "../api/axios";
+import { createContext, useState, useEffect, useCallback } from 'react'
+import axios from '../api/axios'
 
-export const ProductContext = createContext();
+export const ProductContext = createContext()
 
 export const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(false)
 
   // filters State
-  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState('')
 
   // Fetch products from the server
   const fetchProducts = useCallback(async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams()
       if (categoryFilter) {
-        params.append("category", categoryFilter._id);
-        const response = await axios.get(`/products?${params}`);
-        setProducts(response.data);
+        params.append('category', categoryFilter._id)
+        const response = await axios.get(`/products?${params}`)
+        setProducts(response.data)
       }
     } catch (error) {
-      console.error("Error fetching products", error);
+      console.error('Error fetching products', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [categoryFilter]);
+  }, [categoryFilter])
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    fetchProducts()
+  }, [fetchProducts])
 
   // Add a product
   const addProduct = async (product) => {
     try {
-      console.log(product);
-      const response = await axios.post("/products", product);
-      setProducts([response.data, ...products]);
+      const response = await axios.post('/products', product)
+      setProducts([response.data, ...products])
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error('Error adding product:', error)
     }
-  };
+  }
 
   // Update a product
   const updateProduct = async (product) => {
     try {
-      const response = await axios.put(`/products/${product._id}`, product);
-      setProducts(
-        products.map((arr) => (arr._id === product._id ? response.data : arr))
-      );
+      const response = await axios.put(`/products/${product._id}`, product)
+      setProducts(products.map((arr) => (arr._id === product._id ? response.data : arr)))
     } catch (error) {
-      console.error("Error updating product:", error);
+      console.error('Error updating product:', error)
     }
-  };
+  }
 
   // Delete a product
   const deleteProduct = async (id) => {
     try {
-      await axios.put(`/products/${id}`, { isDrafted: true });
-      setProducts(products.filter((arr) => arr._id !== id));
+      await axios.put(`/products/${id}`, { isDrafted: true })
+      setProducts(products.filter((arr) => arr._id !== id))
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error('Error deleting product:', error)
     }
-  };
+  }
 
   return (
     <ProductContext.Provider
@@ -74,10 +71,10 @@ export const ProductProvider = ({ children }) => {
         loading,
         fetchProducts,
         categoryFilter,
-        setCategoryFilter,
+        setCategoryFilter
       }}
     >
       {children}
     </ProductContext.Provider>
-  );
-};
+  )
+}

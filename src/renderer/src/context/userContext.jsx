@@ -27,7 +27,6 @@ export const UserProvider = ({ children }) => {
       localStorage.setItem('token', token)
       setToken(token)
       setUser(user)
-      console.log(token, user)
       navigate('/')
     } catch (error) {
       console.error('Error logging in:', error)

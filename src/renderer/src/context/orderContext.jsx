@@ -5,18 +5,23 @@ export const OrderContext = createContext()
 
 export const OrderProvider = ({ children }) => {
   const [loading, setIsLoading] = useState(false)
-  const createOrder = async (order) => {
+  const createOrder = async (order, versement, phoneNumber) => {
     try {
       setIsLoading(true)
       const parsedOrder = {
-        phone: 'Phone number here',
-        total: order.items.reduce((acc, item) => acc + item.sellPrice, 0),
+        versement: versement,
+        phone: phoneNumber,
+        total: order.items.reduce(
+          (acc, item) => acc + item.sellPrice * (1 - item.discount / 100),
+          0
+        ),
         orderItems: order.items.map((item) => ({
           product: item._id,
-          sellPrice: item.sellPrice
+          sellPrice: item.sellPrice,
+          discount: item.discount,
+          finalPrice: item.sellPrice * (1 - item.discount / 100)
         }))
       }
-      console.log(parsedOrder)
       await axios.post('/orders', parsedOrder)
     } catch (error) {
       console.error('Error adding arrival:', error)

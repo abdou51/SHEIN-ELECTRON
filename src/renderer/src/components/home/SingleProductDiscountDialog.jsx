@@ -9,12 +9,10 @@ const SingleProductDiscountDialog = ({ onCloseModal, openModal, item }) => {
   const { carts, setCarts, selectedCart, setSelectedCart } = useContext(CartContext)
 
   const handleAddDiscount = () => {
-    console.log('carts', carts)
     const updatedItem = {
       ...item,
       discount: reductionPercentage
     }
-    console.log(updatedItem)
     const updatedItems = selectedCart.items.map((cartItem) =>
       cartItem._id === item._id ? updatedItem : cartItem
     )
@@ -23,8 +21,6 @@ const SingleProductDiscountDialog = ({ onCloseModal, openModal, item }) => {
       ...selectedCart,
       items: updatedItems
     }
-
-    console.log('updatedCart', updatedCart)
 
     setSelectedCart(updatedCart)
     setCarts(carts.map((cart) => (cart.client === updatedCart.client ? updatedCart : cart)))
