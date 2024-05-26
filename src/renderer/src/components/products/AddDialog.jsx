@@ -3,7 +3,7 @@ import { Button, Label, Modal, TextInput, Select, Radio } from 'flowbite-react'
 import { IoMdAdd } from 'react-icons/io'
 import { TiDelete } from 'react-icons/ti'
 
-import { ProductContext } from '../../context/productContext'
+import { ProductPageContext } from '../../context/productPageContext'
 import { CategoryContext } from '../../context/categoryContext'
 import { ArrivalContext } from '../../context/arrivalContext'
 
@@ -13,7 +13,7 @@ const AddDialog = () => {
   const letterSizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'XXXXL', '5XL', '6XL']
 
   // context state
-  const { addProduct } = useContext(ProductContext)
+  const { addProduct, loading } = useContext(ProductPageContext)
   const { categories } = useContext(CategoryContext)
   const { arrivals } = useContext(ArrivalContext)
 
@@ -77,6 +77,7 @@ const AddDialog = () => {
   }
 
   const isFormValid = () => {
+    if (loading) return false
     if (!category) return false
     for (let item of items) {
       if (!item.size || !item.price || !item.quantity) {
@@ -118,6 +119,7 @@ const AddDialog = () => {
                 <Label htmlFor="arrivalFilter" value="Arrivage" />
                 <TextInput
                   id="arrivalFilter"
+                  autoComplete="off"
                   placeholder="Commencez à taper pour rechercher..."
                   value={arrivalFilter}
                   onChange={(event) => {

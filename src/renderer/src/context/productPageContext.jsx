@@ -1,9 +1,12 @@
-import { createContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useState, useEffect, useCallback, useContext } from 'react'
 import axios from '../api/axios'
-
+import { useToast } from '../context/toastContext'
 export const ProductPageContext = createContext()
 
 export const ProductPageProvider = ({ children }) => {
+  // toaster context
+  const { showToast } = useToast()
+
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -35,19 +38,24 @@ export const ProductPageProvider = ({ children }) => {
   }, [fetchProducts])
 
   const addProduct = async (product) => {
+    setLoading(true)
     try {
       const response = await axios.post('/products', product)
-      setProducts([response.data, ...products])
+      showToast('Produits Ajoutées avec success', 'success')
+      setProducts(response.data)
     } catch (error) {
       console.error('Error adding product:', error)
+      showToast("Erreur lors de l'ajout des produits", 'error')
+    } finally {
+      setLoading(false)
     }
   }
 
   // Update a product
-  const updateProduct = async (product) => {
+  const updateProduct = async (id, barcode, product) => {
     try {
-      const response = await axios.put(`/products/${product._id}`, product)
-      setProducts(products.map((arr) => (arr._id === product._id ? response.data : arr)))
+      const response = await axios.put(`/products/${id}`, product)
+      handleBarcodefilter(barcode)
     } catch (error) {
       console.error('Error updating product:', error)
     }

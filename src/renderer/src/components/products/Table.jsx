@@ -1,10 +1,16 @@
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { ProductPageContext } from '../../context/productPageContext'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { BsFillPrinterFill } from 'react-icons/bs'
 
+import UpdateDialog from '../products/UpdateDialog'
+
 const Table = () => {
   const { products, deleteProduct } = useContext(ProductPageContext)
+
+  // dialog state
+  const [updateDialogIsOpen, setUpdateDialogIsOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   return (
     <section className="p-2">
@@ -24,9 +30,17 @@ const Table = () => {
         {products.map((product) => (
           <div
             key={product._id}
-            className="grid grid-cols-10 border-b px-4 py-3 gap-4 items-center"
+            className="grid grid-cols-10 border-b px-4 py-3 gap-4 items-center hover:bg-gray-400 transition duration-200 ease-in-out"
           >
-            <div className="col-span-2">{product.name}</div>
+            <div
+              className="col-span-2"
+              onClick={() => {
+                setSelectedProduct(product)
+                setUpdateDialogIsOpen(true)
+              }}
+            >
+              {product.name}
+            </div>
             <div className="col-span-2">{product.category?.name}</div>
             <div className="col-span-1">{product.size}</div>
             <div className="col-span-2">{product.arrival?.name}</div>
@@ -37,7 +51,7 @@ const Table = () => {
               </sup>
             </div>
             <div className="col-span-1">
-              <div className="flex justify-left" onClick={() => deleteProduct(product._id)}>
+              <div className="flex justify-left">
                 <BsFillPrinterFill color="cyan" size={40} />
               </div>
             </div>
@@ -49,6 +63,13 @@ const Table = () => {
           </div>
         ))}
       </div>
+      <UpdateDialog
+        product={selectedProduct}
+        updateDialogIsOpen={updateDialogIsOpen}
+        onCloseDialog={() => {
+          setUpdateDialogIsOpen(false)
+        }}
+      />
     </section>
   )
 }
