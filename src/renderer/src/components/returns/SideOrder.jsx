@@ -93,9 +93,11 @@ const SideOrder = () => {
                   <div className="flex flex-col">
                     <span>
                       {item.exchangeDetails?.sellPrice}
-                      <sup>
-                        <small>DA</small>
-                      </sup>
+                      {item.exchangeDetails && (
+                        <sup>
+                          <small>DA</small>
+                        </sup>
+                      )}
                     </span>
                   </div>
                 </div>

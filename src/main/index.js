@@ -58,7 +58,9 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('print-request', async (event, arg) => {
     console.log('Received print request with:', arg)
-    await printReceipt(arg)
+    for (let i = 0; i < arg.paperCount; i++) {
+      await printReceipt(arg)
+    }
     event.reply('print-reply', 'Printed successfully')
   })
 
@@ -107,7 +109,11 @@ async function printReceipt(finalOrder) {
   const finalOrderDate = new Date(finalOrder.date)
   finalOrderDate.setHours(finalOrderDate.getHours() + 1)
 
-  const formattedDate = finalOrderDate.toISOString().slice(0, 10)
+  const day = String(finalOrderDate.getDate()).padStart(2, '0') // Get day and pad with leading zero if needed
+  const month = String(finalOrderDate.getMonth() + 1).padStart(2, '0') // Get month (0-based, so add 1) and pad with leading zero if needed
+  const year = finalOrderDate.getFullYear() // Get full year
+
+  const formattedDate = `${day}-${month}-${year}`
   const formattedTime = finalOrderDate.toISOString().slice(11, 19)
 
   printer.println(`Date: ${formattedDate}   Heure: ${formattedTime}`)
@@ -152,6 +158,7 @@ async function printReceipt(finalOrder) {
     printer.alignLeft()
     printer.println('Client:')
     printer.println(`Telephone: ${finalOrder.phone}`)
+    printer.println(`Note: ${finalOrder.note}`)
   }
 
   printer.drawLine()
@@ -162,12 +169,11 @@ async function printReceipt(finalOrder) {
 
   printer.alignLeft()
   printer.bold(true)
-  printer.println('Kadri TECH')
+  printer.println('Kadri TECH ( 06.96.09.24.52 )')
   printer.setTextNormal()
   printer.println('. Sponsor ( Facebook & Instagram). ')
-  printer.println('. developpement Des sites web & logiciels. ')
+  printer.println('. Developpement des sites web & logiciels. ')
   printer.println('. Publicite digitale.')
-  printer.println('. 06.96.09.24.52')
 
   const minLines = 50
   const currentLines = printer.buffer.length

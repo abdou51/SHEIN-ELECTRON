@@ -5,12 +5,13 @@ export const OrderContext = createContext()
 
 export const OrderProvider = ({ children }) => {
   const [loading, setIsLoading] = useState(false)
-  const createOrder = async (order, versement, phoneNumber) => {
+  const createOrder = async (order, selectedPaperCount) => {
     try {
       setIsLoading(true)
       const parsedOrder = {
-        versement: versement,
-        phone: phoneNumber,
+        versement: order.versement,
+        phone: order.phoneNumber,
+        note: order.note,
         total: order.items.reduce(
           (acc, item) => acc + item.sellPrice * (1 - item.discount / 100),
           0
@@ -28,12 +29,8 @@ export const OrderProvider = ({ children }) => {
       const reference = createdOrder.data.reference.slice(1)
       parsedOrder.date = date
       parsedOrder.reference = reference
-      const response = window.electron.ipcRenderer.send(
-        'print-request',
-        parsedOrder,
-        phoneNumber,
-        versement
-      )
+      parsedOrder.paperCount = selectedPaperCount
+      const response = window.electron.ipcRenderer.send('print-request', parsedOrder)
     } catch (error) {
       console.error('Error adding arrival:', error)
     } finally {

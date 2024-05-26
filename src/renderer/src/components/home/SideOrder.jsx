@@ -21,21 +21,15 @@ const SideOrder = () => {
 
   // single product discount dialog state
   const [openModal, setOpenModal] = useState(false)
-  const [openFinalizeOrderModal, setOpenFinalizeOrderModal] = useState(false)
   const [openReceiptNumDialog, setOpenReceiptNumDialog] = useState(false)
   const [openVersementDialog, setOpenVersementDialog] = useState(false)
 
   const [selectedItem, setSelectedItem] = useState({})
   const [selectedPaperCount, setSelectedPaperCount] = useState(2)
-  const [versement, setVersement] = useState(0)
-  const [phoneNumber, setPhoneNumber] = useState('')
 
   // close modal state
   function onCloseModal() {
     setOpenModal(false)
-  }
-  function onCloseFinalizeOrderModal() {
-    setOpenFinalizeOrderModal(false)
   }
   function onCloseReceiptNumDialog() {
     setOpenReceiptNumDialog(false)
@@ -85,20 +79,13 @@ const SideOrder = () => {
             <FaMoneyBillWave size={30} color="white" />
             <h1>Versement:</h1>
             <h1>
-              {versement}
+              {selectedCart.versement}
               <sup>
                 <small>DA</small>
               </sup>
             </h1>
           </div>
-          <VersementDialog
-            openModal={openVersementDialog}
-            onCloseModal={onCloseVersementDialog}
-            versement={versement}
-            setVersement={setVersement}
-            phoneNumber={phoneNumber}
-            setPhoneNumber={setPhoneNumber}
-          />
+          <VersementDialog openModal={openVersementDialog} onCloseModal={onCloseVersementDialog} />
         </div>
         <div className="overflow-auto hide-scrollbar h-[20rem] font-bold text-left">
           <ul>
@@ -167,10 +154,8 @@ const SideOrder = () => {
         </div>
         <button
           onClick={() => {
-            createOrder(selectedCart, versement, phoneNumber)
-            setSelectedCart({ items: [], client: 0 })
-            setVersement(0)
-            setPhoneNumber('')
+            createOrder(selectedCart, selectedPaperCount)
+            setSelectedCart({ items: [], client: 0, versement: 0, phoneNumber: '', note: '' })
           }}
           disabled={selectedCart.items.length === 0 || loading}
           className="bg-cyan-700 h-20 text-4xl text-bold rounded-b-2xl grotesk flex items-center justify-center gap-2 hover:opacity-75"

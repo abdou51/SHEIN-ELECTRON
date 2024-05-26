@@ -4,9 +4,17 @@ import axios from '../api/axios'
 export const CartContext = createContext()
 
 export const CartProvider = ({ children }) => {
-  const [carts, setCarts] = useState([{ client: 0, items: [] }])
+  const [carts, setCarts] = useState([
+    { client: 0, items: [], versement: 0, phoneNumber: '', note: '' }
+  ])
 
-  const [selectedCart, setSelectedCart] = useState({ ...carts[0], client: 0 })
+  const [selectedCart, setSelectedCart] = useState({
+    ...carts[0],
+    client: 0,
+    versement: 0,
+    phoneNumber: '',
+    note: ''
+  })
   const [barcode, setBarcode] = useState('')
 
   const updateSelectedCart = (cartIndex, updatedItems) => {
@@ -66,13 +74,39 @@ export const CartProvider = ({ children }) => {
       ...prevCarts,
       {
         client: prevCarts.length, // Assign client based on the current length of the array
-        items: []
+        items: [],
+        versement: 0,
+        phoneNumber: '',
+        note: ''
       }
     ])
   }
 
   const deleteCart = (cartIndex) => {
     setCarts((prevCarts) => [...prevCarts.slice(0, cartIndex), ...prevCarts.slice(cartIndex + 1)])
+  }
+
+  const addVersement = (versement, phoneNumber, note) => {
+    setSelectedCart((prevSelectedCart) => ({
+      ...prevSelectedCart,
+      versement,
+      phoneNumber,
+      note
+    }))
+
+    setCarts((prevCarts) => {
+      const newCarts = [...prevCarts]
+      const cartIndex = selectedCart.client
+
+      newCarts[cartIndex] = {
+        ...newCarts[cartIndex],
+        versement,
+        phoneNumber,
+        note
+      }
+
+      return newCarts
+    })
   }
 
   return (
@@ -87,7 +121,8 @@ export const CartProvider = ({ children }) => {
         setSelectedCart,
         barcode,
         handleSetBarcode,
-        setCarts
+        setCarts,
+        addVersement
       }}
     >
       {children}
