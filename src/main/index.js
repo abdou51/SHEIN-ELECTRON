@@ -58,9 +58,10 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('print-request', async (event, arg) => {
     console.log('Received print request with:', arg)
-    for (let i = 0; i < arg.paperCount; i++) {
-      await printReceipt(arg)
-    }
+    // for (let i = 0; i < arg.paperCount; i++) {
+    //   await printReceipt(arg)
+    // }
+    await printReceipt(arg)
     event.reply('print-reply', 'Printed successfully')
   })
 

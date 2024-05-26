@@ -109,6 +109,35 @@ export const CartProvider = ({ children }) => {
     })
   }
 
+  const emptyAndDeleteSelectedCart = () => {
+    const cartIndex = selectedCart.client
+
+    // Reset selected cart
+    setSelectedCart({
+      client: 0,
+      items: [],
+      versement: 0,
+      phoneNumber: '',
+      note: ''
+    })
+    setCarts((prevCarts) => {
+      const newCarts = [...prevCarts]
+
+      if (cartIndex === 0) {
+        newCarts[cartIndex] = {
+          client: 0,
+          items: [],
+          versement: 0,
+          phoneNumber: '',
+          note: ''
+        }
+      } else {
+        newCarts.splice(cartIndex, 1)
+      }
+
+      return newCarts
+    })
+  }
   return (
     <CartContext.Provider
       value={{
@@ -122,7 +151,8 @@ export const CartProvider = ({ children }) => {
         barcode,
         handleSetBarcode,
         setCarts,
-        addVersement
+        addVersement,
+        emptyAndDeleteSelectedCart
       }}
     >
       {children}

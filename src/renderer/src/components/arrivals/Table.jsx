@@ -1,13 +1,13 @@
-import { useContext } from "react";
-import { dateFormat } from "../../utils/dateFormat";
-import { ArrivalContext } from "../../context/arrivalContext";
+import { useContext } from 'react'
+import { dateFormat } from '../../utils/dateFormat'
+import { ArrivalContext } from '../../context/arrivalContext'
 
 const Table = () => {
-  const { arrivals } = useContext(ArrivalContext);
+  const { arrivals } = useContext(ArrivalContext)
 
   return (
     <section className="p-2">
-      <div className=" h-[650px] overflow-y-auto hide-scrollbar rounded-lg">
+      <div className=" h-[550px] overflow-y-auto hide-scrollbar rounded-lg">
         <div className="sticky top-0 grid grid-cols-10 bg-gray-200 text-black px-6 py-3 font-bold z-10 gap-4 items-center">
           <div className="col-span-4">Nom</div>
           <div className="col-span-1">Date</div>
@@ -17,10 +17,7 @@ const Table = () => {
           <div className="col-span-2">Détails</div>
         </div>
         {arrivals.map((arrival) => (
-          <div
-            key={arrival._id}
-            className="grid grid-cols-10 border-b px-6 py-4 gap-4"
-          >
+          <div key={arrival._id} className="grid grid-cols-10 border-b px-6 py-4 gap-4">
             <div className="col-span-4">{arrival.name}</div>
             <div className="col-span-1">{dateFormat(arrival.date)}</div>
             <div className="col-span-1">{arrival.quantity}</div>
@@ -37,7 +34,7 @@ const Table = () => {
         ))}
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Table;
+export default Table

@@ -31,43 +31,10 @@ export const ProductProvider = ({ children }) => {
     fetchProducts()
   }, [fetchProducts])
 
-  // Add a product
-  const addProduct = async (product) => {
-    try {
-      const response = await axios.post('/products', product)
-      setProducts([response.data, ...products])
-    } catch (error) {
-      console.error('Error adding product:', error)
-    }
-  }
-
-  // Update a product
-  const updateProduct = async (product) => {
-    try {
-      const response = await axios.put(`/products/${product._id}`, product)
-      setProducts(products.map((arr) => (arr._id === product._id ? response.data : arr)))
-    } catch (error) {
-      console.error('Error updating product:', error)
-    }
-  }
-
-  // Delete a product
-  const deleteProduct = async (id) => {
-    try {
-      await axios.put(`/products/${id}`, { isDrafted: true })
-      setProducts(products.filter((arr) => arr._id !== id))
-    } catch (error) {
-      console.error('Error deleting product:', error)
-    }
-  }
-
   return (
     <ProductContext.Provider
       value={{
         products,
-        addProduct,
-        updateProduct,
-        deleteProduct,
         loading,
         fetchProducts,
         categoryFilter,

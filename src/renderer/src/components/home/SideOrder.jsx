@@ -15,8 +15,15 @@ import ReceiptNum from './ReceiptNum'
 import VersementDialog from './VersementDialog'
 
 const SideOrder = () => {
-  const { carts, createNewCart, deleteCart, selectedCart, setSelectedCart, removeItemFromCart } =
-    useContext(CartContext)
+  const {
+    carts,
+    createNewCart,
+    deleteCart,
+    selectedCart,
+    setSelectedCart,
+    removeItemFromCart,
+    emptyAndDeleteSelectedCart
+  } = useContext(CartContext)
   const { createOrder, loading } = useContext(OrderContext)
 
   // single product discount dialog state
@@ -43,16 +50,7 @@ const SideOrder = () => {
       <div className="p-2 flex flex-col justify-between w-[325px]">
         <div className="flex justify-between">
           <div className="gap-2 flex">
-            <span
-              onClick={() => {
-                if (selectedCart.client === 0) {
-                  return
-                }
-                deleteCart(selectedCart.client)
-                setSelectedCart({ ...carts[0], client: 0 })
-              }}
-              className="p-1 hover:cursor-pointer"
-            >
+            <span onClick={() => emptyAndDeleteSelectedCart()} className="p-1 hover:cursor-pointer">
               <IoIosCloseCircle size={70} color="red" />
             </span>
           </div>
@@ -155,7 +153,8 @@ const SideOrder = () => {
         <button
           onClick={() => {
             createOrder(selectedCart, selectedPaperCount)
-            setSelectedCart({ items: [], client: 0, versement: 0, phoneNumber: '', note: '' })
+            setTimeout(() => {}, 1000)
+            emptyAndDeleteSelectedCart()
           }}
           disabled={selectedCart.items.length === 0 || loading}
           className="bg-cyan-700 h-20 text-4xl text-bold rounded-b-2xl grotesk flex items-center justify-center gap-2 hover:opacity-75"
