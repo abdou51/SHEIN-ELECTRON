@@ -4,7 +4,7 @@ import axios from '../api/axios'
 export const ReturnsContext = createContext()
 
 export const ReturnsProvider = ({ children }) => {
-  const [selectedOrder, setSelectedOrder] = useState()
+  const [selectedOrder, setSelectedOrder] = useState(null)
   const [barcode, setBarcode] = useState('')
   const [selectedItem, setSelectedItem] = useState({})
   const [productBarcode, setProductBarcode] = useState('')
@@ -64,9 +64,17 @@ export const ReturnsProvider = ({ children }) => {
 
   const markItemAsReturned = (itemId) => {
     if (selectedOrder) {
-      const updatedOrderItems = selectedOrder.orderItems.map((item) =>
-        item._id === itemId ? { ...item, returned: !item.returned } : item
-      )
+      const updatedOrderItems = selectedOrder.orderItems.map((item) => {
+        if (item._id === itemId) {
+          const updatedItem = { ...item, returned: !item.returned }
+          if (updatedItem.returned) {
+            delete updatedItem.exchangeDetails
+            updatedItem.exchanged = false
+          }
+          return updatedItem
+        }
+        return item
+      })
       console.log('orderItems', updatedOrderItems)
       setSelectedOrder((prevOrder) => ({
         ...prevOrder,

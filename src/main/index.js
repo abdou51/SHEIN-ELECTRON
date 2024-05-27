@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 const path = require('path')
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/logo.jpg?asset'
 
 const ThermalPrinter = require('node-thermal-printer').printer
 const PrinterTypes = require('node-thermal-printer').types
@@ -13,7 +13,7 @@ function createWindow() {
     width: 1366,
     height: 768,
     show: false,
-    fullscreen: true,
+    // fullscreen: true,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -117,33 +117,46 @@ async function printReceipt(finalOrder) {
   const formattedDate = `${day}-${month}-${year}`
   const formattedTime = finalOrderDate.toISOString().slice(11, 19)
 
+  printer.println(`Caisse: ${finalOrder.user}`)
   printer.println(`Date: ${formattedDate}   Heure: ${formattedTime}`)
   printer.drawLine()
   printer.alignLeft()
-  printer.tableCustom([
-    { text: 'Produit', align: 'LEFT', width: 0.5 },
-    { text: 'Reduction', align: 'CENTER', width: 0.25 },
-    { text: 'Prix', align: 'RIGHT', width: 0.25 }
-  ])
-  printer.drawLine()
-  finalOrder.orderItems.forEach((item) => {
+  const hasDiscount = finalOrder.orderItems.some((item) => item.discount > 0)
+
+  if (hasDiscount) {
     printer.tableCustom([
-      { text: item.productName, align: 'LEFT', width: 0.5 },
-      { text: `${item.discount} %`, align: 'CENTER', width: 0.25 },
-      { text: `${item.finalPrice} DA`, align: 'RIGHT', width: 0.25 }
+      { text: 'Produit', align: 'LEFT', width: 0.5 },
+      { text: 'Reduction', align: 'CENTER', width: 0.25 },
+      { text: 'Prix', align: 'RIGHT', width: 0.25 }
     ])
+  } else {
+    printer.tableCustom([
+      { text: 'Produit', align: 'LEFT', width: 0.75 },
+      { text: 'Prix', align: 'RIGHT', width: 0.25 }
+    ])
+  }
+  printer.drawLine()
+
+  finalOrder.orderItems.forEach((item) => {
+    if (hasDiscount) {
+      printer.tableCustom([
+        { text: item.productName.slice(0, -10), align: 'LEFT', width: 0.5 },
+        { text: `${item.discount} %`, align: 'CENTER', width: 0.25 },
+        { text: `${item.finalPrice} DA`, align: 'RIGHT', width: 0.25 }
+      ])
+    } else {
+      printer.tableCustom([
+        { text: item.productName.slice(0, -10), align: 'LEFT', width: 0.75 },
+        { text: `${item.finalPrice} DA`, align: 'RIGHT', width: 0.25 }
+      ])
+    }
     printer.drawLine()
   })
   printer.alignRight()
   printer.setTextSize(1, 1)
   printer.alignCenter()
   printer.bold(true)
-  // {
-  //   printer.println(`Soustotal: ${finalOrder.total} DA`)
-  //   printer.newLine()
-  //   printer.println(`Reduction: ${finalOrder.reduction} DA`)
-  //   printer.newLine()
-  // }
+
   printer.newLine()
   printer.setTextSize(2, 2)
   printer.println(`Total: ${finalOrder.total} DA`)
@@ -172,7 +185,7 @@ async function printReceipt(finalOrder) {
   printer.bold(true)
   printer.println('Kadri TECH ( 06.96.09.24.52 )')
   printer.setTextNormal()
-  printer.println('. Sponsor ( Facebook & Instagram). ')
+  printer.println('. SPONSOR ( Facebook & Instagram). ')
   printer.println('. Developpement des sites web & logiciels. ')
   printer.println('. Publicite digitale.')
 

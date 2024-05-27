@@ -6,17 +6,17 @@ import { useNavigate } from 'react-router-dom'
 export const UserContext = createContext()
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(localStorage.getItem('user'))
   const [token, setToken] = useState(localStorage.getItem('token'))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!token) {
+    if (!token || !user) {
       navigate('/login')
     }
-  }, [token, navigate])
+  }, [token, user, navigate])
 
   // Login function
   const login = async (credentials) => {
@@ -25,8 +25,9 @@ export const UserProvider = ({ children }) => {
       const response = await axios.post('/users/login', credentials)
       const { token, user } = response.data
       localStorage.setItem('token', token)
+      localStorage.setItem('user', user.username)
       setToken(token)
-      setUser(user)
+      setUser(user.username)
       navigate('/')
     } catch (error) {
       console.error('Error logging in:', error)
@@ -39,6 +40,7 @@ export const UserProvider = ({ children }) => {
   // Logout function
   const logout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
     setToken(null)
     setUser(null)
     navigate('/login')

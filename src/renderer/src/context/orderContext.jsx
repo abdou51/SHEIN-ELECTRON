@@ -1,9 +1,12 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useContext } from 'react'
 import axios from '../api/axios'
+import { UserContext } from '../context/userContext'
 
 export const OrderContext = createContext()
 
 export const OrderProvider = ({ children }) => {
+  const { user } = useContext(UserContext)
+
   const [loading, setIsLoading] = useState(false)
   const createOrder = async (order, selectedPaperCount) => {
     try {
@@ -30,7 +33,8 @@ export const OrderProvider = ({ children }) => {
       parsedOrder.date = date
       parsedOrder.reference = reference
       parsedOrder.paperCount = selectedPaperCount
-      const response = window.electron.ipcRenderer.send('print-request', parsedOrder)
+      parsedOrder.user = user
+      // const response = window.electron.ipcRenderer.send('print-request', parsedOrder)
     } catch (error) {
       console.error('Error adding arrival:', error)
     } finally {

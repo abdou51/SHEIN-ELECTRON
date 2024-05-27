@@ -22,7 +22,7 @@ const Main = () => {
           autoComplete="off"
           id="default-search"
           className="block w-full p-4 ps-10 text-xl text-white h-20 rounded bg-[#4f4f4f]   "
-          placeholder="Enter BarCode"
+          placeholder="Code Barre"
           value={barcode}
           onChange={(e) => handleSetBarcode(e.target.value)}
         />

@@ -17,9 +17,9 @@ const Sidebar = () => {
   }
 
   return (
-    <nav className="flex flex-col justify-between p-6 min-h-screen w-20">
+    <nav className="flex flex-col justify-between p-4 min-h-screen w-20">
       <Link to="/">
-        <img src={logo} alt="" className="rounded-full" width={60} />
+        <img src={logo} alt="" className="rounded-full" />
       </Link>
       <ul className="flex flex-col gap-8">
         <li>
