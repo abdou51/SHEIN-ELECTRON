@@ -96,13 +96,13 @@ const SideOrder = () => {
                   <FaDeleteLeft className="transform rotate-180 mr-4" size={36} color="red" />
                 </div>
                 <div
-                  className=" flex justify-between items-center"
+                  className="flex justify-between items-center w-full gap-2 hover:cursor-pointer"
                   onClick={() => {
                     setSelectedItem(item)
                     setOpenModal(true)
                   }}
                 >
-                  <h3 className="h7">{item.name}</h3>
+                  <h3 className="h7">{item.name.slice(0, -10)}</h3>
 
                   <div className="flex flex-col">
                     <span

@@ -1,69 +1,79 @@
-import { createContext, useState, useEffect, useCallback } from "react";
-import axios from "../api/axios";
+import { createContext, useState, useEffect, useCallback } from 'react'
+import axios from '../api/axios'
 
-export const ArrivalContext = createContext();
+import { useToast } from '../context/toastContext'
+
+export const ArrivalContext = createContext()
 
 export const ArrivalProvider = ({ children }) => {
-  const [arrivals, setArrivals] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // toast context
+  const { showToast } = useToast()
+
+  // arrivaks state
+  const [arrivals, setArrivals] = useState([])
+  const [loading, setLoading] = useState(false)
 
   // filters State
-  const [nameFilter, setNameFilter] = useState("");
-  const [startDateFilter, setStartDateFilter] = useState("");
-  const [endDateFilter, setEndDateFilter] = useState("");
+  const [nameFilter, setNameFilter] = useState('')
+  const [startDateFilter, setStartDateFilter] = useState('')
+  const [endDateFilter, setEndDateFilter] = useState('')
 
   // Fetch arrivals from the server
   const fetchArrivals = useCallback(async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const params = new URLSearchParams();
-      if (nameFilter) params.append("name", nameFilter);
-      if (startDateFilter) params.append("startDate", startDateFilter);
-      if (endDateFilter) params.append("endDate", endDateFilter);
-      const response = await axios.get(`/arrivals?${params}`);
-      setArrivals(response.data);
+      const params = new URLSearchParams()
+      if (nameFilter) params.append('name', nameFilter)
+      if (startDateFilter) params.append('startDate', startDateFilter)
+      if (endDateFilter) params.append('endDate', endDateFilter)
+      const response = await axios.get(`/arrivals?${params}`)
+      setArrivals(response.data)
     } catch (error) {
-      console.error("Error fetching arrivals:", error);
+      console.error('Error fetching arrivals:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [nameFilter, startDateFilter, endDateFilter]);
+  }, [nameFilter, startDateFilter, endDateFilter])
 
   useEffect(() => {
-    fetchArrivals();
-  }, [fetchArrivals]);
+    fetchArrivals()
+  }, [fetchArrivals])
 
   // Add an arrival
   const addArrival = async (arrival) => {
     try {
-      const response = await axios.post("/arrivals", arrival);
-      setArrivals([response.data, ...arrivals]);
+      const response = await axios.post('/arrivals', arrival)
+      fetchArrivals()
+      showToast('Arrivage crée avec success', 'success')
     } catch (error) {
-      console.error("Error adding arrival:", error);
+      console.error('Error adding arrival:', error)
+      showToast("Erreur lors de la création de l'arrivage", 'error')
     }
-  };
+  }
 
   // Update an arrival
   const updateArrival = async (id, updatedArrival) => {
     try {
-      const response = await axios.put(`/arrivals/${id}`, updatedArrival);
-      setArrivals(
-        arrivals.map((arr) => (arr._id === id ? response.data : arr))
-      );
+      const response = await axios.put(`/arrivals/${id}`, updatedArrival)
+      setArrivals(arrivals.map((arr) => (arr._id === id ? response.data : arr)))
+      showToast('Arrival modifié avec success', 'success')
     } catch (error) {
-      console.error("Error updating arrival:", error);
+      console.error('Error updating arrival:', error)
+      showToast("Erreur lors de la modification de l'arrivage", 'error')
     }
-  };
+  }
 
   // Delete an arrival
   const deleteArrival = async (id) => {
     try {
-      await axios.delete(`/arrivals/${id}`);
-      setArrivals(arrivals.filter((arr) => arr._id !== id));
+      await axios.delete(`/arrivals/${id}`)
+      setArrivals(arrivals.filter((arr) => arr._id !== id))
+      showToast('Arrivage supprimé avec success', 'success')
     } catch (error) {
-      console.error("Error deleting arrival:", error);
+      console.error('Error deleting arrival:', error)
+      showToast("Erreur lors de la suppression de l'arrivage", 'error')
     }
-  };
+  }
 
   return (
     <ArrivalContext.Provider
@@ -79,10 +89,10 @@ export const ArrivalProvider = ({ children }) => {
         startDateFilter,
         setStartDateFilter,
         endDateFilter,
-        setEndDateFilter,
+        setEndDateFilter
       }}
     >
       {children}
     </ArrivalContext.Provider>
-  );
-};
+  )
+}

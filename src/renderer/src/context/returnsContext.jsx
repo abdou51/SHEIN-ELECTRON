@@ -83,6 +83,11 @@ export const ReturnsProvider = ({ children }) => {
     }
   }
 
+  const resetOrder = () => {
+    setSelectedOrder(null)
+    setBarcode('')
+  }
+
   return (
     <ReturnsContext.Provider
       value={{
@@ -96,7 +101,8 @@ export const ReturnsProvider = ({ children }) => {
         setSelectedItem,
         handleSetProductExchange,
         openModal,
-        setOpenModal
+        setOpenModal,
+        resetOrder
       }}
     >
       {children}

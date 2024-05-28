@@ -112,7 +112,7 @@ const AddDialog = () => {
         <Modal.Body>
           <div className="space-y-6">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-              Ajouter un produit
+              Ajouter des produits
             </h3>
             <div>
               <div className="mb-2 block relative">

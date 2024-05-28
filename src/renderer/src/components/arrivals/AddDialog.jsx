@@ -1,71 +1,63 @@
-import {
-  Button,
-  Label,
-  Modal,
-  TextInput,
-  Datepicker,
-  Select,
-} from "flowbite-react";
-import { IoMdAdd } from "react-icons/io";
-import { TiDelete } from "react-icons/ti";
+import { Button, Label, Modal, TextInput, Datepicker, Select } from 'flowbite-react'
+import { IoMdAdd } from 'react-icons/io'
+import { TiDelete } from 'react-icons/ti'
 
-import { useState, useContext } from "react";
-import { CategoryContext } from "../../context/categoryContext";
-import { ArrivalContext } from "../../context/arrivalContext";
+import { useState, useContext } from 'react'
+import { CategoryContext } from '../../context/categoryContext'
+import { ArrivalContext } from '../../context/arrivalContext'
 const AddDialog = () => {
   // context state
-  const { categories } = useContext(CategoryContext);
-  const { addArrival, updateArrival, deleteArrival, loading } =
-    useContext(ArrivalContext);
+  const { categories } = useContext(CategoryContext)
+  const { addArrival, updateArrival, deleteArrival, loading } = useContext(ArrivalContext)
 
   // local state
-  const [openModal, setOpenModal] = useState(false);
-  const [name, setName] = useState("");
-  const [date, setDate] = useState(new Date());
-  const [quantity, setQuantity] = useState(undefined);
-  const [numBoxes, setNumBoxes] = useState(undefined);
-  const [category, setCategory] = useState("");
+  const [openModal, setOpenModal] = useState(false)
+  const [name, setName] = useState('')
+  const [date, setDate] = useState(new Date())
+  const [quantity, setQuantity] = useState(undefined)
+  const [numBoxes, setNumBoxes] = useState(undefined)
+  const [category, setCategory] = useState('')
   const [items, setItems] = useState([
     {
-      category: "",
-      quantity: undefined,
-    },
-  ]);
+      category: '',
+      quantity: undefined
+    }
+  ])
 
   function onCloseModal() {
-    setOpenModal(false);
-    setName("");
-    setDate(new Date());
-    setQuantity(null);
-    setNumBoxes(null);
-    setCategory("");
+    setOpenModal(false)
+    setName('')
+    setDate(new Date())
+    setQuantity(null)
+    setNumBoxes(null)
+    setCategory('')
     setItems([
       {
-        category: "",
-        quantity: undefined,
-      },
-    ]);
+        category: '',
+        quantity: undefined
+      }
+    ])
   }
 
   // event functions
   const handlewheel = (event) => {
-    event.target.blur();
-  };
+    event.target.blur()
+  }
 
   // submit functions
 
   const handleAddArrival = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     addArrival({
       name,
       date,
       quantity,
       numBoxes,
       category,
-      items,
-    });
-    onCloseModal();
-  };
+      items
+    })
+    onCloseModal()
+  }
 
   return (
     <>
@@ -120,11 +112,7 @@ const AddDialog = () => {
                 type="number"
                 onWheel={handlewheel}
                 onChange={(event) =>
-                  setQuantity(
-                    event.target.value === ""
-                      ? undefined
-                      : Number(event.target.value)
-                  )
+                  setQuantity(event.target.value === '' ? undefined : Number(event.target.value))
                 }
                 required
               />
@@ -140,11 +128,7 @@ const AddDialog = () => {
                 type="number"
                 onWheel={handlewheel}
                 onChange={(event) =>
-                  setNumBoxes(
-                    event.target.value === ""
-                      ? undefined
-                      : Number(event.target.value)
-                  )
+                  setNumBoxes(event.target.value === '' ? undefined : Number(event.target.value))
                 }
                 required
               />
@@ -175,9 +159,9 @@ const AddDialog = () => {
                     setItems([
                       ...items,
                       {
-                        category,
-                        quantity,
-                      },
+                        category: '',
+                        quantity: undefined
+                      }
                     ])
                   }
                 >
@@ -185,10 +169,7 @@ const AddDialog = () => {
                 </Button>
               </div>
               {items.map((item, index) => (
-                <div
-                  className="flex justify-between items-center mb-2"
-                  key={index}
-                >
+                <div className="flex justify-between items-center mb-2" key={index}>
                   <Label htmlFor="category" value={`Catégorie ${index + 1}`} />
                   <Select
                     id="category"
@@ -199,10 +180,10 @@ const AddDialog = () => {
                           if (i === index) {
                             return {
                               ...it,
-                              category: e.target.value,
-                            };
+                              category: e.target.value
+                            }
                           }
-                          return it;
+                          return it
                         })
                       )
                     }
@@ -227,12 +208,10 @@ const AddDialog = () => {
                             return {
                               ...it,
                               quantity:
-                                event.target.value === ""
-                                  ? null
-                                  : Number(event.target.value),
-                            };
+                                event.target.value === '' ? null : Number(event.target.value)
+                            }
                           }
-                          return it;
+                          return it
                         })
                       )
                     }
@@ -240,9 +219,7 @@ const AddDialog = () => {
                   />
                   <div
                     className="border w-12 h-12 text-red-500 flex items-center justify-center text-3xl rounded-lg font-bold"
-                    onClick={() =>
-                      setItems(items.filter((it, i) => i !== index))
-                    }
+                    onClick={() => setItems(items.filter((it, i) => i !== index))}
                   >
                     <button>
                       <TiDelete size={48} />
@@ -260,7 +237,7 @@ const AddDialog = () => {
         </Modal.Body>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default AddDialog;
+export default AddDialog

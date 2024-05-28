@@ -5,13 +5,13 @@ export const CartContext = createContext()
 
 export const CartProvider = ({ children }) => {
   const [carts, setCarts] = useState([
-    { client: 0, items: [], versement: 0, phoneNumber: '', note: '' }
+    { client: 0, items: [], versement: '', phoneNumber: '', note: '' }
   ])
 
   const [selectedCart, setSelectedCart] = useState({
     ...carts[0],
     client: 0,
-    versement: 0,
+    versement: '',
     phoneNumber: '',
     note: ''
   })
@@ -73,9 +73,9 @@ export const CartProvider = ({ children }) => {
     setCarts((prevCarts) => [
       ...prevCarts,
       {
-        client: prevCarts.length, // Assign client based on the current length of the array
+        client: prevCarts.length,
         items: [],
-        versement: 0,
+        versement: '',
         phoneNumber: '',
         note: ''
       }
@@ -116,7 +116,7 @@ export const CartProvider = ({ children }) => {
     setSelectedCart({
       client: 0,
       items: [],
-      versement: 0,
+      versement: '',
       phoneNumber: '',
       note: ''
     })
@@ -127,7 +127,7 @@ export const CartProvider = ({ children }) => {
         newCarts[cartIndex] = {
           client: 0,
           items: [],
-          versement: 0,
+          versement: '',
           phoneNumber: '',
           note: ''
         }

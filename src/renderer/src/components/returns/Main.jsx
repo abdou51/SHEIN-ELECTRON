@@ -7,7 +7,7 @@ import { GiClothes } from 'react-icons/gi'
 
 import { useContext } from 'react'
 const Main = () => {
-  const { barcode, handleSetBarcode } = useContext(ReturnsContext)
+  const { barcode, handleSetBarcode, resetOrder } = useContext(ReturnsContext)
   return (
     <section className="p-2 w-full">
       <div className="items-center justify-end flex">
@@ -26,6 +26,12 @@ const Main = () => {
           value={barcode}
           onChange={(e) => handleSetBarcode(e.target.value)}
         />
+        <button
+          onClick={resetOrder}
+          className="ml-4 border border-white rounded-md p-4 hover:bg-cyan-500 bg-gray-500"
+        >
+          Réinitialiser
+        </button>
       </div>
     </section>
   )

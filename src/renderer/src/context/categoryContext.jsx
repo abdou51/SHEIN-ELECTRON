@@ -34,10 +34,10 @@ export const CategoryProvider = ({ children }) => {
     try {
       const response = await axios.post('/categories', category) // Use axios instance
       setCategories((prevCategories) => [response.data, ...prevCategories])
-      showToast('This is a toast notification!', 'success')
+      showToast('Categorie crée avec success', 'success')
     } catch (error) {
       console.error('Error adding category:', error)
-      showToast('This is a toast notification!', 'error')
+      showToast('Erreur lors de la création de la catégorie', 'error')
     }
   }
 
@@ -45,11 +45,11 @@ export const CategoryProvider = ({ children }) => {
   const updateCategory = async (id, updatedCategory) => {
     try {
       const response = await axios.put(`/categories/${id}`, updatedCategory) // Use axios instance
-      setCategories(
-        categories.map((cat) => (cat._id === id ? response.data : cat))
-      )
+      setCategories(categories.map((cat) => (cat._id === id ? response.data : cat)))
+      showToast('Categorie modifié avec success', 'success')
     } catch (error) {
       console.error('Error updating category:', error)
+      showToast('Erreur lors de la modification de la catégorie', 'error')
     }
   }
 
@@ -58,10 +58,10 @@ export const CategoryProvider = ({ children }) => {
     try {
       await axios.delete(`/categories/${id}`) // Use axios instance
       setCategories(categories.filter((cat) => cat._id !== id))
-      showToast('This is a toast notification!', 'success')
+      showToast('Categorie supprimé avec success', 'success')
     } catch (error) {
       console.error('Error deleting category:', error)
-      showToast('This is a toast notification!', 'error')
+      showToast('Erreur lors de la suppression de la catégorie', 'error')
     }
   }
 
@@ -73,7 +73,7 @@ export const CategoryProvider = ({ children }) => {
         addCategory,
         updateCategory,
         deleteCategory,
-        loading,
+        loading
       }}
     >
       {children}

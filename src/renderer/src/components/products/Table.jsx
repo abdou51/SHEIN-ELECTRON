@@ -3,6 +3,8 @@ import { ProductPageContext } from '../../context/productPageContext'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { BsFillPrinterFill } from 'react-icons/bs'
 
+import { MdEdit } from 'react-icons/md'
+
 import UpdateDialog from '../products/UpdateDialog'
 
 const Table = () => {
@@ -24,7 +26,7 @@ const Table = () => {
           <div className="col-span-1">Taille</div>
           <div className="col-span-2">Arrivage</div>
           <div className="col-span-1">Prix</div>
-          <div className="col-span-1">Etiquette</div>
+          <div className="col-span-1">Modifier</div>
           <div className="col-span-1">Supprimer</div>
         </div>
         {products.map((product) => (
@@ -32,15 +34,7 @@ const Table = () => {
             key={product._id}
             className="grid grid-cols-10 border-b px-4 py-3 gap-4 items-center hover:bg-gray-400 transition duration-200 ease-in-out"
           >
-            <div
-              className="col-span-2"
-              onClick={() => {
-                setSelectedProduct(product)
-                setUpdateDialogIsOpen(true)
-              }}
-            >
-              {product.name}
-            </div>
+            <div className="col-span-2">{product.name}</div>
             <div className="col-span-2">{product.category?.name}</div>
             <div className="col-span-1">{product.size}</div>
             <div className="col-span-2">{product.arrival?.name}</div>
@@ -50,10 +44,16 @@ const Table = () => {
                 <small>DA</small>
               </sup>
             </div>
-            <div className="col-span-1">
-              <div className="flex justify-left">
-                <BsFillPrinterFill color="cyan" size={40} />
-              </div>
+            <div className="col-span-1 flex justify-left">
+              <button
+                className="flex justify-left"
+                onClick={() => {
+                  setSelectedProduct(product)
+                  setUpdateDialogIsOpen(true)
+                }}
+              >
+                <MdEdit color="cyan" size={40} />
+              </button>
             </div>
             <div className="col-span-1">
               <div className="flex justify-left" onClick={() => deleteProduct(product._id)}>

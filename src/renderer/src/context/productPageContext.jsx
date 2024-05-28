@@ -42,7 +42,7 @@ export const ProductPageProvider = ({ children }) => {
     try {
       const response = await axios.post('/products', product)
       showToast('Produits Ajoutées avec success', 'success')
-      setProducts(response.data)
+      fetchProducts()
     } catch (error) {
       console.error('Error adding product:', error)
       showToast("Erreur lors de l'ajout des produits", 'error')
@@ -56,8 +56,10 @@ export const ProductPageProvider = ({ children }) => {
     try {
       const response = await axios.put(`/products/${id}`, product)
       handleBarcodefilter(barcode)
+      showToast('Produit modifié avec success', 'success')
     } catch (error) {
       console.error('Error updating product:', error)
+      showToast('Erreur lors de la modification du produit', 'error')
     }
   }
 
@@ -66,8 +68,10 @@ export const ProductPageProvider = ({ children }) => {
     try {
       await axios.put(`/products/${id}`, { isDrafted: true })
       setProducts(products.filter((arr) => arr._id !== id))
+      showToast('Produit supprimé avec success', 'success')
     } catch (error) {
       console.error('Error deleting product:', error)
+      showToast('Erreur lors de la suppression du produit', 'error')
     }
   }
 
