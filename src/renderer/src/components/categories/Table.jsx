@@ -8,11 +8,11 @@ const Table = () => {
   const { categories, deleteCategory } = useContext(CategoryContext)
   const [updateDialogIsOpen, setUpdateDialogIsOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState()
-  const [yesNoDialogIsOpen, setYesNoDialogIsOpen] = useState(false);
+  const [yesNoDialogIsOpen, setYesNoDialogIsOpen] = useState(false)
   return (
     <>
       <section className="p-2">
-        <div className=" h-[650px] overflow-y-auto hide-scrollbar rounded-lg">
+        <div className=" h-[600px] overflow-y-auto hide-scrollbar rounded-lg">
           <div className="sticky top-0 grid grid-cols-10 bg-gray-200 text-black px-6 py-3 font-bold z-10 gap-4 items-center">
             <div className="col-span-6">Nom</div>
             <div className="col-span-2 text-center">Stock</div>
@@ -43,7 +43,7 @@ const Table = () => {
                   onClick={() => {
                     setSelectedCategory(category)
                     setYesNoDialogIsOpen(true)
-                    }}
+                  }}
                 >
                   <IoIosCloseCircle color="red" size={40} />
                 </button>
@@ -62,11 +62,11 @@ const Table = () => {
       <YesNoDialog
         yesNoDialogIsOpen={yesNoDialogIsOpen}
         onNo={() => {
-          setYesNoDialogIsOpen(false);
+          setYesNoDialogIsOpen(false)
         }}
         onYes={() => {
           deleteCategory(selectedCategory?._id)
-          setYesNoDialogIsOpen(false);
+          setYesNoDialogIsOpen(false)
         }}
       />
     </>

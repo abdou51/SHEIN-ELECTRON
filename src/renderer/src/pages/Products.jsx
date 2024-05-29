@@ -4,7 +4,7 @@ import AddDialog from '../components/products/AddDialog'
 import CategoryFilter from '../components/products/CategoryFilter'
 import BarcodeFilter from '../components/products/BarcodeFilter'
 
-const Arrivals = () => {
+const Products = () => {
   return (
     <>
       <div className="flex">
@@ -25,4 +25,4 @@ const Arrivals = () => {
   )
 }
 
-export default Arrivals
+export default Products
