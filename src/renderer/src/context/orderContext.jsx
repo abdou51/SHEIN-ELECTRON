@@ -34,7 +34,7 @@ export const OrderProvider = ({ children }) => {
       parsedOrder.reference = reference
       parsedOrder.paperCount = selectedPaperCount
       parsedOrder.user = user
-      // const response = window.electron.ipcRenderer.send('print-request', parsedOrder)
+      const response = window.electron.ipcRenderer.send('print-request', parsedOrder)
     } catch (error) {
       console.error('Error adding arrival:', error)
     } finally {

@@ -37,10 +37,48 @@ export const ProductPageProvider = ({ children }) => {
     fetchProducts()
   }, [fetchProducts])
 
+  const handlePrint = (products) => {
+    const options = {
+      preview: true,
+      copies: 1,
+      margin: '0 0 0 0',
+      printerName: 'XP-80C',
+      silent: true,
+      pageSize: '40mm'
+    }
+
+    products.forEach((product) => {
+      const dataToPrint = [
+        {
+          type: 'text',
+          value: product.name.slice(0, -10),
+          style: { fontSize: '15px', fontWeight: '800', textAlign: 'left' }
+        },
+        {
+          type: 'text',
+          value: `${product.sellPrice} DZD`,
+          style: { fontSize: '15px', fontWeight: '800', textAlign: 'left' }
+        },
+        {
+          type: 'barCode',
+          value: product.barcode,
+          height: 18,
+          width: 1,
+          fontsize: 12,
+          displayValue: true,
+          style: { fontSize: '16px', fontWeight: '800', textAlign: 'left' }
+        }
+      ]
+
+      window.electron.ipcRenderer.send('print-stickers', dataToPrint, options)
+    })
+  }
+
   const addProduct = async (product) => {
     setLoading(true)
     try {
       const response = await axios.post('/products', product)
+      handlePrint(response.data)
       showToast('Produits Ajoutées avec success', 'success')
       fetchProducts()
     } catch (error) {
@@ -56,6 +94,7 @@ export const ProductPageProvider = ({ children }) => {
     try {
       const response = await axios.put(`/products/${id}`, product)
       handleBarcodefilter(barcode)
+
       showToast('Produit modifié avec success', 'success')
     } catch (error) {
       console.error('Error updating product:', error)

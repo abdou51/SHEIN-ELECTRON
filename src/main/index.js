@@ -3,6 +3,7 @@ import { join } from 'path'
 const path = require('path')
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/logo.jpg?asset'
+const { PosPrinter } = require('electron-pos-printer')
 
 const ThermalPrinter = require('node-thermal-printer').printer
 const PrinterTypes = require('node-thermal-printer').types
@@ -18,7 +19,10 @@ function createWindow() {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   })
 
@@ -58,11 +62,22 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('print-request', async (event, arg) => {
     console.log('Received print request with:', arg)
-    // for (let i = 0; i < arg.paperCount; i++) {
-    //   await printReceipt(arg)
-    // }
-    await printReceipt(arg)
+    for (let i = 0; i < arg.paperCount; i++) {
+      await printReceipt(arg)
+    }
     event.reply('print-reply', 'Printed successfully')
+  })
+
+  ipcMain.on('print-stickers', (event, dataToPrint, options) => {
+    PosPrinter.print(dataToPrint, options)
+      .then(() => {
+        console.log('Print Success')
+        event.reply('print-reply', 'Printed successfully')
+      })
+      .catch((error) => {
+        console.error('Print Error:', error)
+        event.reply('print-reply', 'Print failed')
+      })
   })
 
   createWindow()
@@ -96,6 +111,9 @@ async function printReceipt(finalOrder) {
   })
   const logoPath = path.join(__dirname, '../../resources/logo.png')
   const infoLogo = path.join(__dirname, '../../resources/BONSHEIN.png')
+
+  printer.openCashDrawer()
+
   printer.alignCenter()
   await printer.printImage(logoPath)
   printer.alignCenter()

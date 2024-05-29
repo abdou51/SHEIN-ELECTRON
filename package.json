@@ -21,6 +21,7 @@
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
     "axios": "^1.7.2",
+    "electron-pos-printer": "^1.3.6",
     "flowbite-react": "^0.9.0",
     "node-thermal-printer": "^4.4.2",
     "react-router-dom": "^6.23.1",
