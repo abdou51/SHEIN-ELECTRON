@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useState, useEffect, useCallback, useRef } from 'react'
 import axios from '../api/axios'
 
 import { useToast } from '../context/toastContext'
@@ -15,17 +15,23 @@ export const ArrivalProvider = ({ children }) => {
 
   // filters State
   const [nameFilter, setNameFilter] = useState('')
-  const [startDateFilter, setStartDateFilter] = useState('')
-  const [endDateFilter, setEndDateFilter] = useState('')
+  const startDateFilter = useRef()
+  const endDateFilter = useRef()
 
   // Fetch arrivals from the server
+  const setStartDateFilter = (newDate) => {
+    startDateFilter.current = newDate;
+  }
+  const setEndDateFilter = (newDate) => {
+    endDateFilter.current = newDate;
+  }
   const fetchArrivals = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams()
       if (nameFilter) params.append('name', nameFilter)
-      if (startDateFilter) params.append('startDate', startDateFilter)
-      if (endDateFilter) params.append('endDate', endDateFilter)
+      if (startDateFilter.current) params.append('startDate', startDateFilter.current)
+      if (endDateFilter.current) params.append('endDate', endDateFilter.current)
       const response = await axios.get(`/arrivals?${params}`)
       setArrivals(response.data)
     } catch (error) {
@@ -33,7 +39,7 @@ export const ArrivalProvider = ({ children }) => {
     } finally {
       setLoading(false)
     }
-  }, [nameFilter, startDateFilter, endDateFilter])
+  }, [nameFilter,])
 
   useEffect(() => {
     fetchArrivals()

@@ -3,10 +3,12 @@ import { CategoryContext } from '../../context/categoryContext'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { MdEdit } from 'react-icons/md'
 import UpdateDialog from './UpdateDialog'
+import YesNoDialog from './YesNoDialog'
 const Table = () => {
   const { categories, deleteCategory } = useContext(CategoryContext)
   const [updateDialogIsOpen, setUpdateDialogIsOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState()
+  const [yesNoDialogIsOpen, setYesNoDialogIsOpen] = useState(false);
   return (
     <>
       <section className="p-2">
@@ -38,7 +40,10 @@ const Table = () => {
               <div className="col-span-1 flex justify-center">
                 <button
                   className="flex justify-center "
-                  onClick={() => deleteCategory(category._id)}
+                  onClick={() => {
+                    setSelectedCategory(category)
+                    setYesNoDialogIsOpen(true)
+                    }}
                 >
                   <IoIosCloseCircle color="red" size={40} />
                 </button>
@@ -52,6 +57,16 @@ const Table = () => {
         updateDialogIsOpen={updateDialogIsOpen}
         onCloseDialog={() => {
           setUpdateDialogIsOpen(false)
+        }}
+      />
+      <YesNoDialog
+        yesNoDialogIsOpen={yesNoDialogIsOpen}
+        onNo={() => {
+          setYesNoDialogIsOpen(false);
+        }}
+        onYes={() => {
+          deleteCategory(selectedCategory?._id)
+          setYesNoDialogIsOpen(false);
         }}
       />
     </>

@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from 'react'
 import { ProductPageContext } from '../../context/productPageContext'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { BsFillPrinterFill } from 'react-icons/bs'
-
+import YesNoDialog from './YesNoDialog'
 import { MdEdit } from 'react-icons/md'
 
 import UpdateDialog from '../products/UpdateDialog'
@@ -13,7 +13,7 @@ const Table = () => {
   // dialog state
   const [updateDialogIsOpen, setUpdateDialogIsOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
-
+  const [yesNoDialogIsOpen, setYesNoDialogIsOpen] = useState(false);
   return (
     <section className="p-2">
       <div className=" h-[600px] overflow-y-auto hide-scrollbar rounded-lg">
@@ -56,9 +56,12 @@ const Table = () => {
               </button>
             </div>
             <div className="col-span-1">
-              <div className="flex justify-left" onClick={() => deleteProduct(product._id)}>
+              <button className="flex justify-left" onClick={() => {
+                setSelectedProduct(product);
+                setYesNoDialogIsOpen(true);
+              }}>
                 <IoIosCloseCircle color="red" size={40} />
-              </div>
+              </button>
             </div>
           </div>
         ))}
@@ -68,6 +71,16 @@ const Table = () => {
         updateDialogIsOpen={updateDialogIsOpen}
         onCloseDialog={() => {
           setUpdateDialogIsOpen(false)
+        }}
+      />
+      <YesNoDialog
+        yesNoDialogIsOpen={yesNoDialogIsOpen}
+        onNo={() => {
+          setYesNoDialogIsOpen(false);
+        }}
+        onYes={() => {
+          deleteProduct(selectedProduct?._id)
+          setYesNoDialogIsOpen(false);
         }}
       />
     </section>
