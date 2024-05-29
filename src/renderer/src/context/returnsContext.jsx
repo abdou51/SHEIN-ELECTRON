@@ -54,7 +54,20 @@ export const ReturnsProvider = ({ children }) => {
       if (response.status === 200) {
         const order = response.data
         setSelectedOrder(order)
-        console.log('order', order)
+      }
+      setBarcode('')
+    } catch (error) {
+      console.error('Error fetching products:', error)
+    }
+  }
+
+  const handleUpdateOrder = async (order) => {
+    setBarcode(barcode)
+    try {
+      const response = await axios.put(`/orders/${order._id}`,order)
+      if (response.status === 200) {
+        const order = response.data
+        setSelectedOrder(order)
       }
       setBarcode('')
     } catch (error) {
@@ -102,7 +115,8 @@ export const ReturnsProvider = ({ children }) => {
         handleSetProductExchange,
         openModal,
         setOpenModal,
-        resetOrder
+        resetOrder,
+        handleUpdateOrder
       }}
     >
       {children}

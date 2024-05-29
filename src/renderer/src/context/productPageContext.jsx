@@ -37,6 +37,41 @@ export const ProductPageProvider = ({ children }) => {
     fetchProducts()
   }, [fetchProducts])
 
+  const printSingleSticker = (product) => {
+    const options = {
+      preview: true,
+      copies: 1,
+      margin: '0 0 0 0',
+      printerName: 'XP-80C',
+      silent: true,
+      pageSize: '40mm'
+    }
+
+    const dataToPrint = [
+      {
+        type: 'text',
+        value: product.name.slice(0, -10),
+        style: { fontSize: '15px', fontWeight: '800', textAlign: 'left' }
+      },
+      {
+        type: 'text',
+        value: `${product.sellPrice} DZD`,
+        style: { fontSize: '15px', fontWeight: '800', textAlign: 'left' }
+      },
+      {
+        type: 'barCode',
+        value: product.barcode,
+        height: 18,
+        width: 1,
+        fontsize: 12,
+        displayValue: true,
+        style: { fontSize: '16px', fontWeight: '800', textAlign: 'left' }
+      }
+    ]
+
+    window.electron.ipcRenderer.send('print-stickers', dataToPrint, options)
+  }
+
   const handlePrint = (products) => {
     const options = {
       preview: true,
@@ -147,7 +182,8 @@ export const ProductPageProvider = ({ children }) => {
         setCategoryFilter,
         barcode,
         setBarcode,
-        handleBarcodefilter
+        handleBarcodefilter,
+        printSingleSticker
       }}
     >
       {children}

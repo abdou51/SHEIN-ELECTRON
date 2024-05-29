@@ -23,6 +23,7 @@
     "axios": "^1.7.2",
     "electron-pos-printer": "^1.3.6",
     "flowbite-react": "^0.9.0",
+    "flowbite-datepicker": "1.2.2",
     "node-thermal-printer": "^4.4.2",
     "react-router-dom": "^6.23.1",
     "react-toastify": "^10.0.5"
